@@ -101,47 +101,35 @@ ul, li, ol {
 }
 
 .button {
-  position: relative;
-  min-width: 250px;
-  padding: 12px 0;
-  color: #fefefe;
-  font: 400 20px/60px "Helvetica", sans-serif;
-  text-shadow: 0 2px 0 #99160a;
+  appearance: none;
+  -webkit-appearance: none;
+  padding: 0;
   border: 0;
+  outline: 0;
+  font: 400 20px/74px Helvetica, sans-serif;
+  text-shadow: 0 1px 3px #99160a;
+  border-radius: 100px;
+  background-image: linear-gradient(to top, #cf0000, #f31d1ded, #fe575796);
+  box-shadow: 0 8px 0 -4px #f9171061, 0 27px 18px -18px rgba(255,0,0, .7);
+  color: #fff;
   cursor: pointer;
-  transition: .3s;
-  box-sizing: border-box;
-  border-radius: 55px;
-  border-bottom: 5px solid #c95b58;
-  background-image: linear-gradient(to top, #df1d1c 0%, #ff6a6a 100%);
 }
-  .button:hover {
-    box-shadow: inset 0 -1px 24px rgba(126, 44, 42, 0.71);
+
+@media (min-width: 768px) {
+  .button {
+    font-size: 36px;
+    line-height: 145px;
+    box-shadow: 0 14px 0 -7px #f9171061, 0 26px 24px -14px rgba(255,0,0, .7);
   }
-  .button::before {
-    content: '';
-    background: #c95b58;
-    box-shadow: 0 15px 15px black;
-    border-radius: 38px;
-    width: 65%;
-    height: 2px;
-    display: block;
-    position: absolute;
-    bottom: -3px;
-    left: 50%;
-    z-index: 9;
-    transform: translate(-50%, 0);
+}
+
+@media (min-width: 1025px) {
+  .button {
+    font-size: 22px;
+    line-height: 88px;
+    box-shadow: 0 10px 0 -5px #f9171061, 0 27px 18px -18px rgba(255,0,0, .7);
   }
-  .button::after {
-    content: '';
-    position: absolute;
-    left: 6px;
-    right: 6px;
-    top: 6px;
-    bottom: 6px;
-    border-radius: 50px;
-    border: 1px solid #ecad5b40;
-  }
+}
 
 h1, h2, h3, h4, h5, h6, p {
   margin: 0;
@@ -352,7 +340,6 @@ h1, h2, h3, h4, h5, h6, p {
 }
 
 .offer .offer-block > .button {
-  padding: 8px 50px;
   margin-top: 20px;
   display: block;
   width: 270px;
@@ -479,9 +466,6 @@ h1, h2, h3, h4, h5, h6, p {
 
   .offer .offer-block > .button {
     width: 520px;
-    height: 145px;
-    border-radius: 72px;
-    font-size: 36px;
   }
 }
 
@@ -556,8 +540,7 @@ h1, h2, h3, h4, h5, h6, p {
   }
 
   .offer .offer-cta .btn .button {
-    width: 310px;
-    text-align: center;
+    width: 315px;
   }
 }
 
@@ -663,9 +646,13 @@ h1, h2, h3, h4, h5, h6, p {
   display: block;
   padding: 0;
   margin: -20px auto 0;
-  font-size: 17px;
-  height: 80px;
   width: 310px;
+}
+
+@media (min-width: 320px) and (max-width: 767px) {
+  .sale .button {
+    font-size: 17px;
+  }
 }
 
 @media (min-width: 768px) and (max-width: 1024px) {
@@ -690,9 +677,6 @@ h1, h2, h3, h4, h5, h6, p {
 
   .sale .button {
     width: 635px;
-    height: 150px;
-    border-radius: 72px;
-    font-size: 36px;
   }
 }
 
@@ -748,9 +732,7 @@ h1, h2, h3, h4, h5, h6, p {
 
   .sale .button {
     width: 425px;
-    height: 85px;
     margin-top: -70px;
-    font-size: 22px;
   }
 }
 
@@ -1035,8 +1017,7 @@ h1, h2, h3, h4, h5, h6, p {
 
 .works .gallery {
   position: relative;
-  margin: 0 auto;
-  max-width: 500px;
+  margin: 0 10px;
   height: 200px;
   border-radius: 5px;
   box-shadow: 0 8px 20px rgba(0,0,0,.2);
@@ -1139,7 +1120,7 @@ h1, h2, h3, h4, h5, h6, p {
   }
 
   .works .gallery {
-    max-width: 800px;
+    margin: 0 20px;
     height: 500px;
   }
   
@@ -1223,7 +1204,6 @@ h1, h2, h3, h4, h5, h6, p {
 
 .calc .cta .button {
   width: 100%;
-  padding: 4px 0;
 }
 
 @media (min-width: 768px) and (max-width: 1024px) {
@@ -1254,30 +1234,13 @@ h1, h2, h3, h4, h5, h6, p {
   }
   
   .calc .subtitle {
+    margin-bottom: 35px;
     font-size: 27px;
     line-height: 36px;
   }
 
   .calc .cta .button {
-    font-size: 36px;
     width: 510px;
-    border-radius: 85px;
-    line-height: 115px;
-  }
-
-  .calc .cta .button::before {
-    background-color: transparent;
-    width: 80%;
-    height: 2px;
-    bottom: 2px;
-  }
-
-  .calc .cta .button::after {
-    left: 10px;
-    right: 10px;
-    top: 10px;
-    bottom: 10px;
-    border-radius: 85px;
   }
 }
 
@@ -1318,30 +1281,13 @@ h1, h2, h3, h4, h5, h6, p {
   }
   
   .calc .subtitle {
+    margin-bottom: 45px;
     font-size: 25px;
     line-height: 36px;
   }
 
   .calc .cta .button {
-    font-size: 22px;
     width: 310px;
-    border-radius: 85px;
-    line-height: 60px;
-  }
-
-  .calc .cta .button::before {
-    background-color: transparent;
-    width: 80%;
-    height: 2px;
-    bottom: 2px;
-  }
-
-  .calc .cta .button::after {
-    left: 10px;
-    right: 10px;
-    top: 10px;
-    bottom: 10px;
-    border-radius: 85px;
   }
 }
 
@@ -1436,8 +1382,7 @@ h1, h2, h3, h4, h5, h6, p {
 
 .catalog .gallery {
   position: relative;
-  margin: 0 auto;
-  max-width: 500px;
+  margin: 0 10px;
   height: 200px;
   border-radius: 5px;
   box-shadow: 0 8px 20px rgba(0,0,0,.2);
@@ -1591,8 +1536,8 @@ h1, h2, h3, h4, h5, h6, p {
   }
 
   .catalog .gallery {
+    margin: 0 20px;
     height: 500px;
-    max-width: 800px;
   }
   
   .catalog .gallery::before {
@@ -1722,7 +1667,6 @@ h1, h2, h3, h4, h5, h6, p {
 
 .designers .cta .button {
   display: block;
-  padding: 4px 0;
   width: 100%;
   max-width: 300px;
 }
@@ -1772,25 +1716,7 @@ h1, h2, h3, h4, h5, h6, p {
 
   .designers .cta .button {
     margin: 0 auto;
-    font-size: 36px;
     max-width: 510px;
-    border-radius: 85px;
-    line-height: 125px;
-  }
-
-  .designers .cta .button::before {
-    background-color: transparent;
-    width: 80%;
-    height: 2px;
-    bottom: 2px;
-  }
-
-  .designers .cta .button::after {
-    left: 10px;
-    right: 10px;
-    top: 10px;
-    bottom: 10px;
-    border-radius: 85px;
   }
 }
 
@@ -1823,26 +1749,8 @@ h1, h2, h3, h4, h5, h6, p {
   }
 
   .designers .cta .button {
-    font-size: 22px;
     width: 310px;
     margin: 0;
-    border-radius: 85px;
-    line-height: 71px;
-  }
-
-  .designers .cta .button::before {
-    background-color: transparent;
-    width: 80%;
-    height: 2px;
-    bottom: 2px;
-  }
-
-  .designers .cta .button::after {
-    left: 10px;
-    right: 10px;
-    top: 10px;
-    bottom: 10px;
-    border-radius: 85px;
   }
 }
 
@@ -2261,25 +2169,7 @@ h1, h2, h3, h4, h5, h6, p {
 
   .present .cta .button {
     margin: 0 auto;
-    font-size: 36px;
-    max-width: 510px;
-    border-radius: 85px;
-    line-height: 125px;
-  }
-
-  .present .cta .button::before {
-    background-color: transparent;
-    width: 80%;
-    height: 2px;
-    bottom: 2px;
-  }
-
-  .present .cta .button::after {
-    left: 10px;
-    right: 10px;
-    top: 10px;
-    bottom: 10px;
-    border-radius: 85px;
+    max-width: 600px;
   }
 }
 
@@ -2335,26 +2225,8 @@ h1, h2, h3, h4, h5, h6, p {
   }
 
   .present .cta .button {
-    font-size: 22px;
     width: 360px;
     margin: 0;
-    border-radius: 85px;
-    line-height: 71px;
-  }
-
-  .present .cta .button::before {
-    background-color: transparent;
-    width: 80%;
-    height: 2px;
-    bottom: 2px;
-  }
-
-  .present .cta .button::after {
-    left: 10px;
-    right: 10px;
-    top: 10px;
-    bottom: 10px;
-    border-radius: 85px;
   }
 }
 
@@ -2375,6 +2247,7 @@ h1, h2, h3, h4, h5, h6, p {
 
 .testimonials .block {
   margin: 20px auto 0;
+  padding: 0 10px;
   max-width: 500px;
   width: 100%;
   display: flex;
@@ -2505,6 +2378,7 @@ h1, h2, h3, h4, h5, h6, p {
 
   .testimonials .block {
     margin-top: 60px;
+    padding: 0;
     max-width: 600px;
     flex-direction: column-reverse;
   }
@@ -2582,7 +2456,6 @@ h1, h2, h3, h4, h5, h6, p {
     margin-top: 75px;
     max-width: none;
     flex-direction: row;
-    padding: 0;
   }
 
   .testimonials .block .gallery {
@@ -2664,10 +2537,7 @@ h1, h2, h3, h4, h5, h6, p {
 
 .check .button {
   display: block;
-  padding: 0;
   margin: 25px auto 0;
-  font-size: 20px;
-  line-height: 70px;
   width: 260px;
 }
 
@@ -2695,25 +2565,6 @@ h1, h2, h3, h4, h5, h6, p {
   .check .button {
     margin-top: auto;
     width: 600px;
-    font-size: 36px;
-    height: auto;
-    line-height: 125px;
-    border-radius: 85px;
-  }
-
-  .check .button::before {
-    background-color: transparent;
-    width: 80%;
-    height: 2px;
-    bottom: 2px;
-  }
-
-  .check .button::after {
-    left: 10px;
-    right: 10px;
-    top: 10px;
-    bottom: 10px;
-    border-radius: 85px;
   }
 }
 
@@ -2751,25 +2602,8 @@ h1, h2, h3, h4, h5, h6, p {
   }
 
   .check .button {
-    font-size: 22px;
     width: 300px;
     margin: 50px 0 0;
-    line-height: 79px;
-  }
-
-  .check .button::before {
-    background-color: transparent;
-    width: 80%;
-    height: 2px;
-    bottom: 2px;
-  }
-
-  .check .button::after {
-    left: 10px;
-    right: 10px;
-    top: 10px;
-    bottom: 10px;
-    border-radius: 85px;
   }
 }
 
