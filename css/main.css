@@ -1494,12 +1494,13 @@ h1, h2, h3, h4, h5, h6, p {
 .catalog .toolbar .group span {
   position: relative;
   z-index: 2;
+  pointer-events: none;
 }
 
 .catalog .gallery {
   position: relative;
   margin: 0 10px;
-  height: 200px;
+  height: calc((100vw - 20px) / 1.4);
   border-radius: 5px;
   box-shadow: 0 8px 20px rgba(0,0,0,.2);
   overflow: hidden;
@@ -1514,6 +1515,7 @@ h1, h2, h3, h4, h5, h6, p {
   bottom: 5px;
   border-radius: 5px;
   border: 1px solid #e6e6e6;
+  pointer-events: none;
   z-index: 5;
 }
 
@@ -1526,7 +1528,7 @@ h1, h2, h3, h4, h5, h6, p {
   position: relative;
   display: flex;
   align-items: flex-end;
-  flex-basis: calc((100% - 50px) / 3);
+  width: calc((100% - 50px) / 3);
   height: 265px;
 }
 
@@ -1543,15 +1545,15 @@ h1, h2, h3, h4, h5, h6, p {
   transition: opacity .2s;
 }
 
-.catalog .items .item:hover::after {
+.catalog .items .item:hover::after, .catalog .items .item.-active::after {
   opacity: .7;
 }
 
-.catalog .items .item:not(:nth-child(3n + 1)) {
+.catalog .items .item:not(:nth-child(3n + 2)) {
   margin-left: 25px;
 }
 
-.catalog .items .item:nth-child(n + 4) {
+.catalog .items .item:nth-child(n + 5) {
   margin-top: 25px;
 }
 
@@ -1561,6 +1563,27 @@ h1, h2, h3, h4, h5, h6, p {
   border-radius: 5px;
   overflow: hidden;
   background-color: gray;
+}
+
+.catalog .gallery .nav {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  color: #ffffffcf;
+  border: 4px solid #ffffffcf;
+  background-color: rgba(0,0,0,.5);
+}
+
+.catalog .gallery .nav::after {
+  font-size: 16px;
+}
+
+.catalog .gallery .nav-prev {
+  left: 0;
+}
+
+.catalog .gallery .nav-next {
+  right: 0;
 }
 
 .catalog .items .item .price {
@@ -1653,7 +1676,7 @@ h1, h2, h3, h4, h5, h6, p {
 
   .catalog .gallery {
     margin: 0 20px;
-    height: 500px;
+    /* height: 500px; */
   }
   
   .catalog .gallery::before {
@@ -1661,6 +1684,24 @@ h1, h2, h3, h4, h5, h6, p {
     top: 10px;
     right: 10px;
     bottom: 10px;
+  }
+
+  .catalog .gallery .nav {
+    width: 60px;
+    height: 60px;
+    border: 4px solid #ffffffcf;
+  }
+  
+  .catalog .gallery .nav::after {
+    font-size: 20px;
+  }
+  
+  .catalog .gallery .nav-prev {
+    left: 0;
+  }
+  
+  .catalog .gallery .nav-next {
+    right: 0;
   }
 }
 
@@ -1888,13 +1929,18 @@ h1, h2, h3, h4, h5, h6, p {
 }
 
 .warranty .list {
-  padding: 20px 15px 40px;
+  padding-top: 20px;
+}
+
+.warranty .list .item {
+  padding: 0 15px;
 }
 
 .warranty .list .item .image {
   margin-bottom: 5px;
   font-size: 0;
   width: 100%;
+  padding: 0 15%;
   text-align: center;
   overflow: hidden;
 }
@@ -1935,6 +1981,19 @@ h1, h2, h3, h4, h5, h6, p {
   color: #2f2e2e;
 }
 
+.warranty .list .nav {
+  top: 25%;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  color: #7a7a7a;
+  border: 4px solid #d4d4d4;
+}
+
+.warranty .list .nav::after {
+  font-size: 18px;
+}
+
 @media (min-width: 768px) {
   .warranty {
     padding: 80px 0;
@@ -1963,6 +2022,23 @@ h1, h2, h3, h4, h5, h6, p {
   .warranty .list .item .descr {
     font-size: 20px;
     line-height: 28px;
+  }
+
+  .warranty .list .nav {
+    width: 90px;
+    height: 90px;
+  }
+
+  .warranty .list .nav-prev {
+    left: 35px;
+  }
+
+  .warranty .list .nav-next {
+    right: 35px;
+  }
+  
+  .warranty .list .nav::after {
+    font-size: 26px;
   }
 }
 
@@ -2008,6 +2084,25 @@ h1, h2, h3, h4, h5, h6, p {
 
   .warranty .list .item .descr {
     text-align: initial;
+  }
+
+  .warranty .list .nav {
+    width: 50px;
+    height: 50px;
+    top: auto;
+    bottom: 0
+  }
+
+  .warranty .list .nav-prev {
+    left: 40%;
+  }
+
+  .warranty .list .nav-next {
+    right: 40%;
+  }
+  
+  .warranty .list .nav::after {
+    font-size: 18px;
   }
 }
 
@@ -2363,44 +2458,69 @@ h1, h2, h3, h4, h5, h6, p {
   letter-spacing: -1px;
 }
 
-.testimonials .block {
+.testimonials .gallery {
+  padding-bottom: 80px;
   margin: 20px auto 0;
-  padding: 0 10px;
   max-width: 500px;
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   color: #2f2e2e;
 }
 
-.testimonials .block .gallery {
-  width: 100%;
+.testimonials .gallery .swiper-slide {
+  padding: 0 10px;
+  display: flex;
+  flex-direction: column;
 }
 
-.testimonials .block .gallery .image {
+.testimonials .gallery .nav {
+  top: auto;
+  bottom: 0;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  color: #828282cf;
+  border: 4px solid #7a7a7acf;
+}
+
+.testimonials .gallery .nav::after {
+  font-size: 16px;
+}
+
+.testimonials .gallery .nav-prev {
+  left: 20px;
+}
+
+.testimonials .gallery .nav-next {
+  right: 20px;
+}
+
+.testimonials .gallery .image {
+  position: relative;
   font-size: 0;
   border-radius: 5px;
-  min-height: 168px;
+  height: calc((100vw - 20px) / 1.6);
+  max-height: 270px;
   background-color: #ccc;
+  overflow: hidden;
 }
 
-.testimonials .block .gallery .thumbs {
+.testimonials .gallery .thumbs {
   margin-top: 15px;
   display: flex;
-  align-items: center;
 }
 
-.testimonials .block .gallery .thumb {
+.testimonials .gallery .thumb {
   position: relative;
   flex-basis: calc((100% - 30px) / 3);
-  min-height: 50px;
+  height: calc((100vw - 50px) / 3 / 1.6);
+  max-height: 95px;
   font-size: 0;
   border-radius: 5px;
   background-color: #ccc;
+  overflow: hidden;
 }
 
-.testimonials .block .gallery .thumb::before {
+.testimonials .gallery .thumb::before {
   content: '';
   position: absolute;
   top: 0;
@@ -2411,25 +2531,26 @@ h1, h2, h3, h4, h5, h6, p {
   z-index: 1;
 }
 
-.testimonials .block .gallery .thumb:hover::before {
+.testimonials .gallery .thumb:hover::before,
+.testimonials .gallery .thumb.-active::before {
   background-color: #f0b74e80;
 }
 
-.testimonials .block .gallery .thumb + .thumb {
+.testimonials .gallery .thumb + .thumb {
   margin-left: 15px;
 }
 
-.testimonials .block .speech {
+.testimonials .speech {
   padding: 0 10px;
   margin-top: 15px;
 }
 
-.testimonials .block .speech .author {
+.testimonials .speech .author {
   display: none;
   align-items: center;
 }
 
-.testimonials .block .speech .author .photo {
+.testimonials .speech .author .photo {
   flex-basis: 86px;
   min-width: 86px;
   height: 86px;
@@ -2438,49 +2559,45 @@ h1, h2, h3, h4, h5, h6, p {
   background-color: #ccc;
 }
 
-.testimonials .block .speech .author .data {
+.testimonials .speech .author .data {
   margin-left: 15px;
   flex-grow: 1;
 } 
 
-.testimonials .block .speech .author .name {
+.testimonials .speech .author .name {
   font-size: 16px;
   line-height: 24px;
   font-weight: 700;
 }
 
-.testimonials .block .speech .author .date {
+.testimonials .speech .author .date {
   margin-top: 8px;
   font-size: 12px;
   line-height: 1;
 }
 
-.testimonials .block .speech .text {
-  margin-top: 15px;
-}
-
-.testimonials .block .speech .text .highlight {
+.testimonials .speech .text .highlight {
   font-size: 17px;
   line-height: 22px;
   font-weight: 700;
 }
 
-.testimonials .block .speech .text .highlight::before {
+.testimonials .speech .text .highlight::before {
   content: '\00AB';
 }
-.testimonials .block .speech .text .highlight::after {
+.testimonials .speech .text .highlight::after {
   content: '\00BB';
 }
 
-.testimonials .block .speech .text .quote {
+.testimonials .speech .text .quote {
   font-size: 14px;
 }
 
-.testimonials .block .speech .text .highlight + .quote {
+.testimonials .speech .text .highlight + .quote {
   margin-top: 10px;
 }
 
-.testimonials .block .speech .text .quote + .quote {
+.testimonials .speech .text .quote + .quote {
   margin-top: 8px;
 }
 
@@ -2488,74 +2605,69 @@ h1, h2, h3, h4, h5, h6, p {
   .testimonials {
     padding: 100px 0 70px;
   }
-
+  
   .testimonials .header .title {
     font-size: 57px;
     line-height: 64px;
   }
+  
+  .testimonials .gallery {
+    max-width: 90%;
+    padding-bottom: 120px;
+  }
 
-  .testimonials .block {
-    margin-top: 60px;
+  .testimonials .gallery .swiper-slide {
     padding: 0;
-    max-width: 600px;
+    max-width: none;
     flex-direction: column-reverse;
   }
 
-  .testimonials .block .gallery {
+  .testimonials .image-container {
     margin-top: 40px;
   }
 
-  .testimonials .block .gallery .image {
-    min-height: 320px;
+  .testimonials .gallery .image {
+    max-height: 480px;
   }
 
-  .testimonials .block .gallery .thumb {
-    min-height: 98px;
+  .testimonials .gallery .thumb {
+    max-height: 170px;
   }
 
-  .testimonials .block .speech {
+  .testimonials .speech {
     margin-top: 0;
   }
 
-  .testimonials .block .speech .author {
-    flex-direction: column;
-  }
-
-  .testimonials .block .speech .author .data {
-    margin-left: 0;
-    margin-top: 10px;
-  }
-
-  .testimonials .block .speech .author .name {
-    font-size: 21px;
-    line-height: 24px;
-  }
-
-  .testimonials .block .speech .author .date {
-    font-size: 18px;
-  } 
-
-  .testimonials .block .speech .author p {
-    text-align: center;
-  }
-
-  .testimonials .block .speech .text {
-    margin-top: 25px;
-  }
-
-  .testimonials .block .speech .text p {
+  .testimonials .speech .text p {
     text-align: center;
   }
   
-  .testimonials .block .speech .text .highlight {
+  .testimonials .speech .text .highlight {
     font-size: 31px;
     line-height: 38px;
   }
   
-  .testimonials .block .speech .text .quote {
+  .testimonials .speech .text .quote {
     margin-top: 25px;
     font-size: 20px;
     line-height: 28px;
+  }
+
+  .testimonials .gallery .nav {
+    width: 90px;
+    height: 90px;
+  }
+  
+  .testimonials .gallery .nav::after {
+    font-size: 22px;
+  }
+  
+  .testimonials .gallery .nav-prev {
+    left: 0;
+  }
+  
+  .testimonials .gallery .nav-next {
+    right: 0;
   }
 }
 
@@ -2570,58 +2682,88 @@ h1, h2, h3, h4, h5, h6, p {
     line-height: 52px;
   }
 
-  .testimonials .block {
+  .testimonials .gallery {
     margin-top: 75px;
     max-width: none;
     flex-direction: row;
   }
 
-  .testimonials .block .gallery {
+  .testimonials .gallery .swiper-slide {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .testimonials .gallery .nav {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .testimonials .gallery .nav::after {
+    font-size: 20px;
+  }
+  
+  .testimonials .gallery .nav-prev {
+    left: 35%;
+  }
+  
+  .testimonials .gallery .nav-next {
+    right: 35%;
+  }
+
+  .testimonials .gallery .image-container {
     margin-top: 0;
     flex-basis: calc(50% - 20px);
     margin-right: auto;
   }
 
-  .testimonials .block .speech {
+  .testimonials .gallery .image {
+    max-height: 325px;
+  }
+
+  .testimonials .gallery .thumb {
+    max-height: 100px;
+  }
+
+  .testimonials .speech {
     flex-basis: calc(50% - 20px);
   }
 
-  .testimonials .block .speech .author {
+  .testimonials .speech .author {
     display: flex;
     flex-direction: row;
   }
 
-  .testimonials .block .speech .author .data {
+  .testimonials .speech .author .data {
     margin-left: 15px;
     margin-top: 0;
   }
 
-  .testimonials .block .speech .author .name {
+  .testimonials .speech .author .name {
     font-size: 19px;
   }
 
-  .testimonials .block .speech .author .date {
+  .testimonials .speech .author .date {
     font-size: 14px;
   } 
 
-  .testimonials .block .speech .author p {
+  .testimonials .speech .author p {
     text-align: left;
   }
 
-  .testimonials .block .speech .text {
+  .testimonials .speech .text {
     margin-top: 20px;
   }
 
-  .testimonials .block .speech .text p {
+  .testimonials .speech .text p {
     text-align: left;
   }
   
-  .testimonials .block .speech .text .highlight {
+  .testimonials .speech .text .highlight {
     font-size: 21px;
     line-height: 27px;
   }
   
-  .testimonials .block .speech .text .quote {
+  .testimonials .speech .text .quote {
     font-size: 18px;
     line-height: 25px;
   }
@@ -3557,6 +3699,7 @@ h1, h2, h3, h4, h5, h6, p {
   }
   
   .onaction .controls .button {
+    vertical-align: middle;
     width: 280px;
     font-size: 17px;
     height: 80px;
@@ -3910,6 +4053,7 @@ h1, h2, h3, h4, h5, h6, p {
 
 .slider .gallery.-mobile .image {
   position: relative;
+  overflow: hidden;
 }
 
 .slider .thumbs {
@@ -3924,6 +4068,7 @@ h1, h2, h3, h4, h5, h6, p {
   height: 80px;
   background-color: #ccc;
   border-radius: 10px;
+  overflow: hidden;
 }
 
 .slider .thumbs .thumb + .thumb {
