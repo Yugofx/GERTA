@@ -38,6 +38,7 @@
       </div>
     </header>
     <main class="page-content">
+      <div class="header-intersection-checkpoint"></div>
       <section class="offer">
         <div class="offer-block">
           <div class="screen">
@@ -563,11 +564,11 @@
       </ul>
       <button class="button">Рассчитать кухню<br>по моим размерам</button>
       <script type="module">
-        const cSrc = (style, type, index, pos = null) => `photos/catalog/${getDeviceType()}/${style}/${type}/${index}${pos ? `/${pos}.jpg` : '.jpg'}`;
-        const slider = modal.content();
-        const { style, index }  = modal.data();
+        const cSrc = (style, type, index, pos = null) => `photos/catalog/${g.getDeviceType()}/${style}/${type}/${index}${pos ? `/${pos}.jpg` : '.jpg'}`;
+        const slider = g.modal.content();
+        const { style, index }  = g.modal.data();
 
-        if (IS_MOBILE || IS_TABLET) {
+        if (g.IS_MOBILE || g.IS_TABLET) {
           slider.querySelectorAll('.-non-mobile').forEach(node => node.remove());
 
           const wrapper = slider.querySelector('.swiper-wrapper');
@@ -581,12 +582,12 @@
   
           const createSlider = (start = 1) => {
             let src = cSrc(style, 'gallery', index, start);
-            checkImg(src)
+            g.checkImg(src)
               .then(() => {
                 const slide = template.content.cloneNode(true);
                 slide.querySelector('img').src = src;
                 swiper.appendSlide(slide);
-                if (start < 3) createSlider(start + 1);
+                if (start < gertaConfig.catalog.imagesPerKitchen) createSlider(start + 1);
               }).catch(() => console.warn('Изображения в галерее должны носить последовательные имена (1, 2, 3, ..., n, n + 1).\nОшибка загрузки произошла на ' + start + '-ом изображении. Если в галерее есть еще фото, убедитесь, что соблюдается последовательность'));
           }
           createSlider();
@@ -608,7 +609,7 @@
 
           const createGallery = (start = 1) => {
             const src = cSrc(style, 'thumbs', index, start);
-            checkImg(src).then(() => {
+            g.checkImg(src).then(() => {
               const thumbF = template.content.cloneNode(true);
               const thumb = thumbF.firstElementChild;
               thumbF.querySelector('img').src = src;
@@ -619,7 +620,7 @@
                 mainImg.src = src.replace(/thumbs/, 'gallery');
               }
               thumb.addEventListener('click', () => activate(thumb, start));
-              if (start < 3) createGallery(start + 1);
+              if (start < gertaConfig.catalog.imagesPerKitchen) createGallery(start + 1);
             }).catch(() => console.warn('Изображения в галерее должны носить последовательные имена (1, 2, 3, ..., n, n + 1).\nОшибка загрузки произошла на ' + start + '-ом изображении. Если в галерее есть еще фото, убедитесь, что соблюдается последовательность'));
           }
           createGallery();
@@ -660,10 +661,10 @@
       </div>
       <button class="button">Хочу такую же</button>
       <script type="module">
-        const getCaseSrc = getSrc('cases');
-        const slider = modal.content();
+        const getCaseSrc = g.getSrc('cases');
+        const slider = g.modal.content();
 
-        if (IS_MOBILE || IS_TABLET) {
+        if (g.IS_MOBILE || g.IS_TABLET) {
           slider.querySelectorAll('.-non-mobile').forEach(node => node.remove());
 
           const wrapper = slider.querySelector('.swiper-wrapper');
@@ -676,15 +677,12 @@
           });
 
           const createSlider = (start = 1) => {
-            let src = getCaseSrc(modal.data(), 'gallery', start);
-            checkImg(src)
-              .then(() => {
-                const slide = template.content.cloneNode(true);
-                slide.querySelector('img').src = src;
-                wrapper.appendChild(slide);
-                swiper.appendSlide(slide);
-                if (start < 5) createSlider(start + 1);
-              }).catch(() => console.warn('Изображения в галерее должны носить последовательные имена (1, 2, 3, ..., n, n + 1).\nОшибка загрузки произошла на ' + start + '-ом изображении. Если в галерее есть еще фото, убедитесь, что соблюдается последовательность'));
+            let src = getCaseSrc(g.modal.data(), 'gallery', start);
+            const slide = template.content.cloneNode(true);
+            slide.querySelector('img').src = src;
+            wrapper.appendChild(slide);
+            swiper.appendSlide(slide);
+            if (start < gertaConfig.cases.imagesPerCase) createSlider(start + 1);
           }
           createSlider();
         } else {
@@ -696,27 +694,25 @@
           let activeThumb = null;
 
           const activate = (initiator, index) => {
-            mainImg.src = getCaseSrc(modal.data(), 'gallery', index);
+            mainImg.src = getCaseSrc(g.modal.data(), 'gallery', index);
             if (activeThumb) activeThumb.classList.remove('-active');
             activeThumb = initiator;
             activeThumb.classList.add('-active');
           };
 
           const createGallery = (start = 1) => {
-            const src = getCaseSrc(modal.data(), 'thumbs', start);
-            checkImg(src).then(() => {
-              const thumbF = template.content.cloneNode(true);
-              const thumb = thumbF.firstElementChild;
-              thumbF.querySelector('img').src = src;
-              thumbs.appendChild(thumbF);
-              if (!activeThumb) {
-                activeThumb = thumb;
-                activeThumb.classList.add('-active');
-                mainImg.src = getCaseSrc(modal.data(), 'gallery', start);
-              }
-              thumb.addEventListener('click', () => activate(thumb, start));
-              if (start < 5) createGallery(start + 1);
-            }).catch(() => console.warn('Изображения в галерее должны носить последовательные имена (1, 2, 3, ..., n, n + 1).\nОшибка загрузки произошла на ' + start + '-ом изображении. Если в галерее есть еще фото, убедитесь, что соблюдается последовательность'));
+            const src = getCaseSrc(g.modal.data(), 'thumbs', start);
+            const thumbF = template.content.cloneNode(true);
+            const thumb = thumbF.firstElementChild;
+            thumbF.querySelector('img').src = src;
+            thumbs.appendChild(thumbF);
+            if (!activeThumb) {
+              activeThumb = thumb;
+              activeThumb.classList.add('-active');
+              mainImg.src = getCaseSrc(g.modal.data(), 'gallery', start);
+            }
+            thumb.addEventListener('click', () => activate(thumb, start));
+            if (start < gertaConfig.cases.imagesPerCase) createGallery(start + 1);
           }
           createGallery();
         } 
@@ -747,15 +743,14 @@
         <p class="descr">Введите ваш телефон для связи, если&nbsp;у&nbsp;него&nbsp;появятся&nbsp;вопросы</p>
         <form class="controls" name="call-calc">
           <div class="input">
-            <input type="text" pattern="\+7\s\d{3}\s\d{3}-\d{4}" name="tel" required placeholder="Введите номер телефона">
-            <div class="hint">Формат ввода: +7 ХХХ ХХХ-ХХХХ</div>
+            <input type="tel" name="tel" required placeholder="Введите номер телефона">
           </div>
           <button type="submit" class="button">Узнать стоимость</button>
         </form>
         <p class="terms">Нажимая на кнопку вы соглашаетесь с <a href="">условиями обработки персональных данных</a></p>
       </div>
       <script type="module">
-        const article = modal.content();
+        const article = g.modal.content();
         const bar = article.querySelector('.progress-bar');
         const step = article.querySelector('.progress .message span');
         const nextStepBtn = article.querySelector('.button:first-of-type');
@@ -783,8 +778,7 @@
       <p class="descr">Введите ваш телефон. Дизайнер свяжется с вами, чтобы уточнить подробности проекта</p>
       <form class="controls" name="call-calc">
         <div class="input">
-          <input type="text" pattern="\+7\s\d{3}\s\d{3}-\d{4}" name="tel" required placeholder="Введите номер телефона">
-          <div class="hint">Формат ввода: +7 ХХХ ХХХ-ХХХХ</div>
+          <input type="tel" name="tel" required placeholder="Введите номер телефона">
         </div>
         <button type="submit" class="button">Вызвать дизайнера</button>
       </form>
@@ -797,8 +791,7 @@
       <p class="descr">Введите ваш телефон. Дизайнер свяжется с вами, чтобы уточнить подробности проекта</p>
       <form class="controls" name="call-designer">
         <div class="input">
-          <input type="text" pattern="\+7\s\d{3}\s\d{3}-\d{4}" name="tel" required placeholder="Введите номер телефона">
-          <div class="hint">Формат ввода: +7 ХХХ ХХХ-ХХХХ</div>
+          <input type="tel" name="tel" required placeholder="Введите номер телефона">
         </div>
         <button type="submit" class="button">Рассчитать кухню<br>по моим размерам</button>
       </form>
@@ -811,8 +804,7 @@
       <p class="descr">Введите ваш телефон, и мы забронируем за вашим номером купон на скидку и подарки</p>
       <form class="controls" name="call-discount">
         <div class="input">
-          <input type="text" pattern="\+7\s\d{3}\s\d{3}-\d{4}" name="tel" required placeholder="Введите номер телефона">
-          <div class="hint">Формат ввода: +7 ХХХ ХХХ-ХХХХ</div>
+          <input type="tel" name="tel" required placeholder="Введите номер телефона">
         </div>
         <button type="submit" class="button">Получить скидку</button>
       </form>
@@ -868,8 +860,7 @@
           </label>
         </div>
         <div class="input">
-          <input type="text" pattern="\+7\s\d{3}\s\d{3}-\d{4}" name="tel" required placeholder="Введите номер телефона">
-          <div class="hint">Формат ввода: +7 ХХХ ХХХ-ХХХХ</div>
+          <input type="tel" name="tel" required placeholder="Введите номер телефона">
         </div>
         <button type="submit" class="button">Получить инструкцию</button>
       </form>
@@ -883,7 +874,7 @@
       </div>
       <button class="button -light" data-modal="onaction-3">Зарегистрировать скидку</button>
       <script>
-        modal.register(document.body.querySelector('.belt [data-modal]'));
+        g.modal.register(document.body.querySelector('.belt [data-modal]'));
       </script>
     </div>
   </template>
@@ -895,7 +886,7 @@
       </div>
       <button class="button" data-modal="onaction">Вызвать дизайнера</button>
       <script>
-        modal.register(document.body.querySelector('.belt [data-modal]'));
+        g.modal.register(document.body.querySelector('.belt [data-modal]'));
       </script>
     </div>
   </template>
@@ -975,7 +966,7 @@
       <div class="gallery-wrapper swiper-wrapper" data-modal="slider">
         <template>
           <div class="image swiper-slide">
-            <img class="-image-cover" src="photos/cases/mobile/preview/1.jpg" alt="">
+            <img class="-image-cover" src="" alt="">
           </picture>
         </template>
       </div>
@@ -999,6 +990,8 @@
     </div>
   </template>
   <script src="js/swiper.min.js"></script>
+  <script src="js/intersection-observer.js"></script>
+  <script src="js/config.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

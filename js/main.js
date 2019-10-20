@@ -1,122 +1,111 @@
-const IS_MOBILE = document.body.clientWidth < 768;
-const IS_TABLET = document.body.clientWidth < 1025 && document.body.clientWidth >= 768;
-const IS_DESKTOP = document.body.clientWidth >= 1025;
-
-const getDeviceType = () => IS_MOBILE ? 'mobile' : IS_TABLET ? 'tablet' : 'desktop';
-const getSrc = dir => (index, type, slide = 1) => `photos/${dir}/${getDeviceType()}/${type}/${index}/${slide}.jpg`;
-const checkImg = src => new Promise((res, rej) => {
-    const img = new Image();
-    img.onload = res;
-    img.onerror = rej;
-    img.src = src;
-});
-
-function appendFromTemplate(id, container) {
-    container.appendChild(document.getElementById(id).content);
-    return container.lastElementChild;
-}
-
-// HEADER
-function fixHeader(header, isTop) {
-    const isClean = header.classList.contains('-clean');
-    if ((isTop && isClean) || (!isTop && !isClean)) return;
-
-    header.classList[isTop ? 'add' : 'remove']('-clean');
-}
-
-// BANNER
-function getDayType() {
-    const hours = (new Date()).getHours();
-    return (hours >= 5 && hours <= 19) ? 'day' : 'night';
-}
-function appendBanner() {
-    return appendFromTemplate(`${getDayType()}-belt`, document.body);
-}
-function showBanner(banner, show) {
-    const isOn = banner.classList.contains('-on');
-    if ((show && isOn) || (!show && !isOn)) return;
-    banner.classList[show ? 'add' : 'remove']('-on');
-}
-
-// scroll
-function createScrollListener(layer, header, footer, banner) {
-    // Initial runs
-    fixHeader(header, layer.scrollTop < 98);
-    // draw testimonials if close to the viewport
-
-    return function() {
-        const isFirstScreen = layer.scrollTop < window.innerHeight;
-        const isTop = layer.scrollTop < 98;
-        const isFooter = footer.getBoundingClientRect().top < layer.clientHeight;
-
-        fixHeader(header, isTop);
-        showBanner(banner, !isFirstScreen && !isFooter);
-        // draw testimonials if close to the viewport
-    }
-}
-function attachScrollListener(layer) {
-    const header = layer.querySelector('.page-header');
-    const footer = layer.querySelector('.page-footer');
-    const banner = appendBanner();
-
-    layer.addEventListener('scroll', createScrollListener(layer, header, footer, banner), { passive: true });
-}
-
-const modal = (modal => {
-    const backdrop = modal.querySelector('.modal-backdrop');
-    const closeBtn = modal.querySelector('.modal-close');
-    const container = modal.querySelector('.modal-content');
-
-    let _activeTemplate = null;
-    let _data = null;
-
-    const _unload = () => {
-        if (!_activeTemplate) return;
-        container.removeChild(_activeTemplate);
-        _activeTemplate = null;
-        _data = null;
-    }
-    const _load = id => {
-        container.appendChild(document.getElementById(id).content.cloneNode(true));
-        _activeTemplate = container.lastElementChild;
-    };
-
-    const open = data => {
-        if (_activeTemplate) _unload();
-        if (data.modalData) _data = JSON.parse(data.modalData);
-        _load(data.modal);
-        modal.classList.add('-up');
-    };
-    const close = () => {
-        modal.addEventListener('transitionend', _unload, { once: true });
-        modal.classList.remove('-up');
-    };
-    const register = btn => btn.addEventListener('click', open.bind(null, btn.dataset), {passive: true});
-    const content = () => container.lastElementChild;
-    const data = () => _data;
+// TODO: we need to wrap all helpers into g object in case to support Safari 
+// not finding global variables defined with 'const' and 'let' in module scope
+var g = {
+    IS_MOBILE: document.body.clientWidth < 768,
+    IS_TABLET: document.body.clientWidth < 1025 && document.body.clientWidth >= 768,
+    IS_DESKTOP: document.body.clientWidth >= 1025,
     
-    closeBtn.addEventListener('click', close);
-    backdrop.addEventListener('click', close);
+    getDeviceType() {
+        return g.IS_MOBILE ? 'mobile' : g.IS_TABLET ? 'tablet' : 'desktop'
+    },
+    getSrc(dir) {
+        return function(index, type, slide = 1) {
+            return `photos/${dir}/${g.getDeviceType()}/${type}/${index}/${slide}.jpg`
+        }
+    },
+    checkImg(src) {
+        return new Promise((res, rej) => {
+            const img = new Image();
+            img.onload = res;
+            img.onerror = rej;
+            img.src = src;
+        });
+    },
+    appendFromTemplate(id, container) {
+        container.appendChild(document.getElementById(id).content);
+        return container.lastElementChild;
+    },
+    getDayType() {
+        const hours = (new Date()).getHours();
+        return (hours >= 5 && hours <= 19) ? 'day' : 'night';
+    },
+    appendBanner() {
+        return g.appendFromTemplate(`${g.getDayType()}-belt`, document.body);
+    },
+    modal: (modal => {
+        const backdrop = modal.querySelector('.modal-backdrop');
+        const closeBtn = modal.querySelector('.modal-close');
+        const container = modal.querySelector('.modal-content');
+    
+        let _activeTemplate = null;
+        let _data = null;
+    
+        const _unload = () => {
+            if (!_activeTemplate) return;
+            container.removeChild(_activeTemplate);
+            _activeTemplate = null;
+            _data = null;
+        }
+        const _load = id => {
+            container.appendChild(document.getElementById(id).content.cloneNode(true));
+            _activeTemplate = container.lastElementChild;
+        };
+    
+        const open = data => {
+            if (_activeTemplate) _unload();
+            if (data.modalData) _data = JSON.parse(data.modalData);
+            _load(data.modal);
+            modal.classList.add('-up');
+        };
+        const close = () => {
+            modal.addEventListener('transitionend', _unload, { once: true });
+            modal.classList.remove('-up');
+        };
+        const register = btn => btn.addEventListener('click', open.bind(null, btn.dataset), {passive: true});
+        const content = () => container.lastElementChild;
+        const data = () => _data;
+        
+        closeBtn.addEventListener('click', close);
+        backdrop.addEventListener('click', close);
+    
+        document.body.querySelectorAll('[data-modal]').forEach(btn => register(btn));
+    
+        return { open, close, register, content, data };
+    })(document.body.querySelector('.modal-layer')), 
+};
 
-    document.body.querySelectorAll('[data-modal]').forEach(btn => register(btn));
-
-    return { open, close, register, content, data };
-})(document.body.querySelector('.modal-layer'));
-
-// Кейсы
 (gallery => {
     const id = gallery ? 'works-gallery' : 'works-clients';
-    const container = appendFromTemplate(id, document.body.querySelector('section.works'));
+    const container = g.appendFromTemplate(id, document.body.querySelector('section.works'));
     const modalInitiator = container.dataset.modal ? container : container.querySelector('[data-modal]');
 
     modalInitiator.addEventListener('click', e =>
         modalInitiator.setAttribute('data-modal-data', e.target.dataset.modalData));
 
-    modal.register(modalInitiator);
-})(IS_TABLET || IS_MOBILE);
+    g.modal.register(modalInitiator);
+})(g.IS_TABLET || g.IS_MOBILE);
 
-if (IS_DESKTOP) {
-    attachScrollListener(document.querySelector('.main-layer'));
+if (g.IS_DESKTOP) {
+    const banner = g.appendBanner();
+    let skipFirstCheck = true;
+
+    (new IntersectionObserver(([point]) => {
+        document.querySelector('.page-header').classList[point.isIntersecting ? 'add' : 'remove']('-clean');
+    }, {})).observe(document.querySelector('.main-layer .header-intersection-checkpoint'));
+
+    (new IntersectionObserver(([point]) => {
+        if (point.isIntersecting && point.boundingClientRect.top > 0) {
+            banner.classList.add('-on');
+        }
+        if (!point.isIntersecting && point.boundingClientRect.top > 0) {
+            banner.classList.remove('-on');
+        }
+    }, {})).observe(document.querySelector('.reasons'));
+
+    (new IntersectionObserver(([point]) => {
+        if (skipFirstCheck) return (skipFirstCheck = false);
+        banner.classList[point.isIntersecting ? 'remove' : 'add']('-on');
+    }, {})).observe(document.querySelector('.page-footer'));
 }
 
 // Фичи
@@ -136,7 +125,7 @@ if (IS_DESKTOP) {
         [...thumb.parentNode.children].forEach(t => t.classList.remove('-active'));
         thumb.classList.add('-active');
         const img = thumb.parentNode.previousElementSibling.firstElementChild;
-        img.src = thumb.firstElementChild.src.replace(/preview/, getDeviceType());
+        img.src = thumb.firstElementChild.src.replace(/preview/, g.getDeviceType());
     };
     
     const tContainer = document.querySelector('.testimonials .swiper-container');
@@ -157,25 +146,26 @@ if (IS_DESKTOP) {
 
 // Каталог
 (() => {
-    let _activeButton = null;
-    let _swiper = null;
-    const registry = {};
-    const cSrc = (style, type, index, pos = null) => `photos/catalog/${getDeviceType()}/${style}/${type}/${index}${pos ? `/${pos}.jpg` : '.jpg'}`;
-
     const selectStyle = button => {
         if (_activeButton === button) return;
         if (_activeButton) _activeButton.classList.remove('-active');
         _activeButton = button;
         _activeButton.classList.add('-active');
-        catalogDrawer(_activeButton.dataset.style);
+        catalogDrawer.redraw(_activeButton.dataset.style);
     };
 
-    const _draw = (c) => {
-        const t = document.getElementById(IS_DESKTOP ? 'catalog-tiles' : 'catalog-gallery');
+    const _createCatalogDrawer = (c) => {
+        const registry = {};
+        const styles = ['modern', 'classic', 'neoclassic', 'provance'];
+        const t = document.getElementById(g.IS_DESKTOP ? 'catalog-tiles' : 'catalog-gallery');
         const container = t.content.firstElementChild;
-        c.appendChild(t.content);
+        const tmp = container.querySelector('template')
+
         let _style = null;
-        if (!IS_DESKTOP) {
+        let _swiper = null;
+
+        c.appendChild(t.content);
+        if (!g.IS_DESKTOP) {
             _swiper = new Swiper(container, {
                 navigation: {
                     nextEl: container.querySelector('.swiper-button-next'),
@@ -186,23 +176,32 @@ if (IS_DESKTOP) {
 
         const _drawItem = (start = 1) => {
             const src = cSrc(_style, 'preview', start);
-            checkImg(src)
-                .then(() => {
-                    const tmp = container.querySelector('template')
-                    const item = tmp.content.cloneNode(true);
-                    item.querySelector('img').src = src;
-                    item.firstElementChild.setAttribute('data-modal-data', JSON.stringify({ index: start, style: _style }));
-                    if (_swiper) _swiper.appendSlide(item);
-                    else tmp.parentNode.appendChild(item);
-                    _drawItem(start + 1);
-                })
-                .catch(() => console.warn('Если это не все фото, убедитесь, что соблюдается последовательность наименования'));
+            const item = tmp.content.cloneNode(true);
+            item.querySelector('img').src = src;
+            item.firstElementChild.setAttribute('data-modal-data', JSON.stringify({ index: start, style: _style }));
+            if (_swiper) _swiper.appendSlide(item);
+            else tmp.parentNode.appendChild(item);
+            if (start < gertaConfig.catalog.styles[_style]) _drawItem(start + 1);
+        };
+
+        const _deferedRegistryFill = (fragment = document.createDocumentFragment(), style = styles.pop(), start = 1) => {
+            if (_style === style) return;
+            setTimeout(() => {
+                const src = cSrc(style, 'preview', start);
+                const tmp = container.querySelector('template')
+                const item = tmp.content.cloneNode(true);
+                item.querySelector('img').src = src;
+                item.firstElementChild.setAttribute('data-modal-data', JSON.stringify({ index: start, style }));
+                fragment.appendChild(item);
+                if (start < gertaConfig.catalog.styles[style]) _deferedRegistryFill(fragment, style, start + 1);
+                else if (styles.length) _deferedRegistryFill();
+            });
         };
 
         const _clear = () => {
             if (!_style) return;
             const fragment = document.createDocumentFragment();
-            const items = container.querySelectorAll(IS_DESKTOP ? '.item' : '.swiper-slide');
+            const items = container.querySelectorAll(g.IS_DESKTOP ? '.item' : '.swiper-slide');
             items.forEach((i) => fragment.appendChild(i));
             registry[_style] = fragment;
         }
@@ -211,17 +210,14 @@ if (IS_DESKTOP) {
             _clear();
             _style = style;
             if (style in registry) {
-                if (IS_DESKTOP) container.appendChild(registry[style]);
-                else [...registry[style].children].forEach(s => {
-                    container.firstElementChild.appendChild(s);
-                    _swiper.appendSlide(s);
-                });
+                if (g.IS_DESKTOP) container.appendChild(registry[style]);
+                else [...registry[style].children].forEach(s => _swiper.appendSlide(s));
             } else {
                 _drawItem();
             }
         };
 
-        const modalInitiator = IS_DESKTOP ? container : container.firstElementChild;
+        const modalInitiator = g.IS_DESKTOP ? container : container.firstElementChild;
         modalInitiator.addEventListener('click', e => {
             let target = e.target;
             while (target !== modalInitiator) {
@@ -230,14 +226,19 @@ if (IS_DESKTOP) {
             }
             modalInitiator.setAttribute('data-modal-data', target.dataset.modalData);
         });
-        modal.register(modalInitiator);
+        g.modal.register(modalInitiator);
 
-        return redraw;
+        return { redraw, runDefferedRegistryFill: _deferedRegistryFill };
     };
 
+    let _activeButton = null;
+
+    const cSrc = (style, type, index, pos = null) => `photos/catalog/${g.getDeviceType()}/${style}/${type}/${index}${pos ? `/${pos}.jpg` : '.jpg'}`;
     const toolbar = document.querySelector('.catalog .toolbar');
-    const catalogDrawer = _draw(toolbar.parentNode);
+    const catalogDrawer = _createCatalogDrawer(toolbar.parentNode);
     selectStyle(toolbar.firstElementChild.firstElementChild);
+    catalogDrawer.runDefferedRegistryFill();
+
     toolbar.addEventListener('click', e => {
         if (e.target.tagName !== 'BUTTON') return;
         selectStyle(e.target);

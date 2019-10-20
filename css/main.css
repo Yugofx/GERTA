@@ -185,7 +185,8 @@ h1, h2, h3, h4, h5, h6, p {
   left: 0;
   right: 0;
   bottom: 0;
-  overflow: auto;
+  overflow: scroll;
+  -webkit-overflow-scroll: touch;
 }
 
 @media (max-width: 767px) {
@@ -198,6 +199,15 @@ h1, h2, h3, h4, h5, h6, p {
   .main-layer {
     padding-top: 90px;
   }
+}
+
+.header-intersection-checkpoint {
+  display: none;
+  position: absolute;
+  top: 98px;
+  height: 1px;
+  pointer-events: none;
+  z-index: -1;
 }
 
 .page-header {
@@ -223,6 +233,10 @@ h1, h2, h3, h4, h5, h6, p {
   .page-header.-clean .logo-subtitle,
   .page-header.-clean .contacts > .phone {
     color: #fff;
+  }
+
+  .header-intersection-checkpoint {
+    display: block;
   }
 }
 
@@ -465,6 +479,20 @@ h1, h2, h3, h4, h5, h6, p {
   .offer .offer-block .title {
     font-size: 32px;
     line-height: 38px;
+  }
+}
+
+@media (max-width: 767px) {
+  .offer .image {
+    position: relative;
+    height: 270px;
+  }
+  
+  .offer .image img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
 }
 
@@ -3041,7 +3069,7 @@ h1, h2, h3, h4, h5, h6, p {
   bottom: 0;
   left: 0;
   right: 0;
-  height: 148px;
+  height: 90px;
   transform: translateY(148px);
   transition: transform .2s ease-out;
   z-index: 10;
@@ -3053,31 +3081,32 @@ h1, h2, h3, h4, h5, h6, p {
 
 .belt .text {
   padding-right: 20px;
-  font-size: 18px;
-  line-height: 24px;
+  font-size: 16px;
+  line-height: 20px;
 }
 
 .belt .button {
-  font-size: 17px;
+  font-size: 16px;
+  height: 65px;
 }
 
 .belt.-night {
   background: rgba(20,0,0,.9) url('../img/line-img-night.png') 0% 50% no-repeat;
-  background-size: auto 110px;
+  background-size: auto 80px;
   color: #fff;
 }
 
 .belt.-day {
   background: rgba(255,255,255,.9) url('../img/discount.png') 0% 50% no-repeat;
-  background-size: auto 72px;
+  background-size: auto 60px;
 }
 
 .belt.-night .text {
-  margin-left: 145px;
+  margin-left: 110px;
 }
 
 .belt.-day .text {
-  margin-left: 230px;
+  margin-left: 210px;
 }
 
 .belt.-night .button {
@@ -3311,7 +3340,7 @@ h1, h2, h3, h4, h5, h6, p {
   background-color: #fff;
   border-radius: 100px;
   border: 0;
-  box-shadow: inset 0 1px 6px rgba(0,0,0,.2);
+  box-shadow: inset 0 0 8px rgba(0,0,0,.3);
   color: inherit;
 }
 
@@ -3560,7 +3589,7 @@ h1, h2, h3, h4, h5, h6, p {
   background-color: #fff;
   border-radius: 100px;
   border: 0;
-  box-shadow: inset 0 1px 6px rgba(0,0,0,.2);
+  box-shadow: inset 0 0 8px rgba(0,0,0,.3);
   color: inherit;
 }
 
@@ -3840,7 +3869,7 @@ h1, h2, h3, h4, h5, h6, p {
   background-color: #fff;
   border-radius: 100px;
   border: 0;
-  box-shadow: inset 0 1px 6px rgba(0,0,0,.2);
+  box-shadow: inset 0 0 8px rgba(0,0,0,.3);
   color: inherit;
 }
 
