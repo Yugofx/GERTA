@@ -8,18 +8,16 @@ var g = {
     getDeviceType() {
         return g.IS_MOBILE ? 'mobile' : g.IS_TABLET ? 'tablet' : 'desktop'
     },
-    getSrc(dir) {
-        return function(index, type, slide = 1) {
-            return `photos/${dir}/${g.getDeviceType()}/${type}/${index}/${slide}.jpg`
-        }
-    },
-    checkImg(src) {
-        return new Promise((res, rej) => {
-            const img = new Image();
-            img.onload = res;
-            img.onerror = rej;
-            img.src = src;
+    loadImagesOnTargetIntersection(container, target) {
+        const observer = new IntersectionObserver(([point]) => {
+            if (point.isIntersecting) {
+                observer.unobserve(target);
+                container.querySelectorAll('[data-src]').forEach(img => {
+                    img.src = img.dataset.src;
+                })
+            }
         });
+        observer.observe(target);
     },
     appendFromTemplate(id, container) {
         container.appendChild(document.getElementById(id).content);
@@ -65,7 +63,7 @@ var g = {
         const content = () => container.lastElementChild;
         const data = () => _data;
         
-        closeBtn.addEventListener('click', close);
+        // closeBtn.addEventListener('click', close);
         backdrop.addEventListener('click', close);
     
         document.body.querySelectorAll('[data-modal]').forEach(btn => register(btn));
@@ -86,12 +84,15 @@ var g = {
 })(g.IS_TABLET || g.IS_MOBILE);
 
 if (g.IS_DESKTOP) {
-    const banner = g.appendBanner();
-    let skipFirstCheck = true;
-
     (new IntersectionObserver(([point]) => {
-        document.querySelector('.page-header').classList[point.isIntersecting ? 'add' : 'remove']('-clean');
+        const fnName = point.isIntersecting ? 'add' : 'remove';
+        document.querySelector('.page-header').classList[fnName]('-clean');
     }, {})).observe(document.querySelector('.main-layer .header-intersection-checkpoint'));
+}
+
+(() => {
+    const banner = g.IS_DESKTOP ? g.appendBanner() : document.querySelector('.contact-panel');
+    let skipFirstCheck = true;
 
     (new IntersectionObserver(([point]) => {
         if (point.isIntersecting && point.boundingClientRect.top > 0) {
@@ -106,14 +107,15 @@ if (g.IS_DESKTOP) {
         if (skipFirstCheck) return (skipFirstCheck = false);
         banner.classList[point.isIntersecting ? 'remove' : 'add']('-on');
     }, {})).observe(document.querySelector('.page-footer'));
-}
+})();
 
 // Фичи
 (() => {
-    const warrantySwiper = new Swiper('.warranty .swiper-container', {
+    const warranties = document.querySelector('.warranty .swiper-container');
+    const warrantySwiper = new Swiper(warranties, {
         navigation: {
-            nextEl: '.list .swiper-button-next',
-            prevEl: '.list .swiper-button-prev',
+            nextEl: warranties.querySelector('.swiper-button-next'),
+            prevEl: warranties.querySelector('.swiper-button-prev')
         },
         autoHeight: true
     });
@@ -125,7 +127,7 @@ if (g.IS_DESKTOP) {
         [...thumb.parentNode.children].forEach(t => t.classList.remove('-active'));
         thumb.classList.add('-active');
         const img = thumb.parentNode.previousElementSibling.firstElementChild;
-        img.src = thumb.firstElementChild.src.replace(/preview/, g.getDeviceType());
+        img.src = thumb.firstElementChild.dataset.src.replace(/preview/, g.getDeviceType());
     };
     
     const tContainer = document.querySelector('.testimonials .swiper-container');
@@ -135,6 +137,8 @@ if (g.IS_DESKTOP) {
             prevEl: tContainer.querySelector('.swiper-button-prev'),
         },
     });
+
+    g.loadImagesOnTargetIntersection(tContainer, document.querySelector('.catalog'));
     tContainer.querySelectorAll('.swiper-slide')
         .forEach(slide => activate(slide.querySelector('.thumb')));
 
@@ -156,7 +160,6 @@ if (g.IS_DESKTOP) {
 
     const _createCatalogDrawer = (c) => {
         const registry = {};
-        const styles = ['modern', 'classic', 'neoclassic', 'provance'];
         const t = document.getElementById(g.IS_DESKTOP ? 'catalog-tiles' : 'catalog-gallery');
         const container = t.content.firstElementChild;
         const tmp = container.querySelector('template')
@@ -174,27 +177,39 @@ if (g.IS_DESKTOP) {
             })
         }
 
-        const _drawItem = (start = 1) => {
-            const src = cSrc(_style, 'preview', start);
-            const item = tmp.content.cloneNode(true);
-            item.querySelector('img').src = src;
-            item.firstElementChild.setAttribute('data-modal-data', JSON.stringify({ index: start, style: _style }));
-            if (_swiper) _swiper.appendSlide(item);
-            else tmp.parentNode.appendChild(item);
-            if (start < gertaConfig.catalog.styles[_style]) _drawItem(start + 1);
+        const _drawItem = () => {
+            const kitchens = gertaConfig.catalog.items[_style];
+            for (let i = 0; i < kitchens.length; i++) {
+                const kitchen = kitchens[i];
+                const item = tmp.content.cloneNode(true);
+                item.querySelector('img').src = gertaConfig.catalog.previewSrc(i + 1, _style, g.getDeviceType());
+                item.firstElementChild.setAttribute('data-modal-data', JSON.stringify({ index: i + 1, style: _style }));
+                if (_swiper) _swiper.appendSlide(item);
+                else {
+                    if (typeof kitchen.oldPrice === 'number') {
+                        const it = item.querySelector('.item');
+                        item.querySelector('.price .prev').appendChild(document.createTextNode(`${kitchen.oldPrice} Р`));
+                        it.classList.add('-discount');
+                        it.setAttribute('data-diff', `${parseInt((kitchen.oldPrice - kitchen.currentPrice) / kitchen.oldPrice * 100)}%`);
+                    };
+                    item.querySelector('.price .new').appendChild(document.createTextNode(`от ${kitchen.currentPrice} Р`));
+                    tmp.parentNode.appendChild(item);
+                };
+            }
         };
 
-        const _deferedRegistryFill = (fragment = document.createDocumentFragment(), style = styles.pop(), start = 1) => {
-            if (_style === style) return;
-            setTimeout(() => {
-                const src = cSrc(style, 'preview', start);
-                const tmp = container.querySelector('template')
-                const item = tmp.content.cloneNode(true);
-                item.querySelector('img').src = src;
-                item.firstElementChild.setAttribute('data-modal-data', JSON.stringify({ index: start, style }));
-                fragment.appendChild(item);
-                if (start < gertaConfig.catalog.styles[style]) _deferedRegistryFill(fragment, style, start + 1);
-                else if (styles.length) _deferedRegistryFill();
+        const _deferedRegistryFill = () => {
+            Object.keys(gertaConfig.catalog.items).forEach(style => {
+                if (style === _style) return;
+                const fragment = document.createDocumentFragment();
+                setTimeout(() => {
+                    for (let i = 1; i <= gertaConfig.catalog.items[style].length; i++) {
+                        const item = tmp.content.cloneNode(true);
+                        item.querySelector('img').src = gertaConfig.catalog.previewSrc(i, style, g.getDeviceType());
+                        item.firstElementChild.setAttribute('data-modal-data', JSON.stringify({ index: i, style }));
+                        fragment.appendChild(item);
+                    }
+                });
             });
         };
 
@@ -233,11 +248,16 @@ if (g.IS_DESKTOP) {
 
     let _activeButton = null;
 
-    const cSrc = (style, type, index, pos = null) => `photos/catalog/${g.getDeviceType()}/${style}/${type}/${index}${pos ? `/${pos}.jpg` : '.jpg'}`;
     const toolbar = document.querySelector('.catalog .toolbar');
     const catalogDrawer = _createCatalogDrawer(toolbar.parentNode);
     selectStyle(toolbar.firstElementChild.firstElementChild);
-    catalogDrawer.runDefferedRegistryFill();
+    const observer = new IntersectionObserver(([point]) => {
+        if (point.isIntersecting) {
+            observer.unobserve(toolbar);
+            catalogDrawer.runDefferedRegistryFill();
+        } 
+    });
+    observer.observe(toolbar);
 
     toolbar.addEventListener('click', e => {
         if (e.target.tagName !== 'BUTTON') return;
