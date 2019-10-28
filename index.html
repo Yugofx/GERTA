@@ -571,10 +571,10 @@
       </div>
       <script type="module">
         const slider = g.modal.content();
+        const { style, index }  = g.modal.data();
 
         slider.querySelector('.modal-close').addEventListener('click', g.modal.close, { once: true });
 
-        const { style, index }  = g.modal.data();
         const item = gertaConfig.catalog.items[style][index - 1];
         const getGalleryImgSrc = gertaConfig.catalog.gallerySrc(index, style, g.getDeviceType());
         const getThumbsImgSrc = gertaConfig.catalog.thumbSrc(index, style, g.getDeviceType());
@@ -600,7 +600,7 @@
             },
           });
   
-          for (let i = 1; i <= item.gallerySize; i++) {
+          for (let i = 1; i <= gertaConfig.catalog.gallerySize; i++) {
             const slide = template.content.cloneNode(true);
             slide.querySelector('img').src = getGalleryImgSrc(i);
             swiper.appendSlide(slide);
