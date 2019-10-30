@@ -121,6 +121,19 @@ if (g.IS_DESKTOP) {
     });
 })();
 
+// Feedback
+(() => {
+    const container = document.querySelector('.feedback .swiper-container');
+    const swiper = new Swiper(container, {
+        spaceBetween: 30,
+        loop: true,
+        navigation: {
+            nextEl: container.querySelector('.swiper-button-next'),
+            prevEl: container.querySelector('.swiper-button-prev'),
+        },
+    });
+})();
+
 // Отзывы
 (() => {
     const activate = thumb => {

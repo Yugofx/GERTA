@@ -1560,7 +1560,7 @@ h1, h2, h3, h4, h5, h6, p {
   align-items: flex-end;
   width: calc((100% - 50px) / 3);
   height: 265px;
-}
+}  
 
 .catalog .items .item::after {
   content: '';
@@ -1573,6 +1573,7 @@ h1, h2, h3, h4, h5, h6, p {
   opacity: 0;
   z-index: 3;
   transition: opacity .2s;
+  cursor: pointer;
 }
 
 .catalog .items .item:hover::after, .catalog .items .item.-active::after {
@@ -1630,6 +1631,7 @@ h1, h2, h3, h4, h5, h6, p {
   line-height: 65px;
   background-color: rgba(0,0,0,.5);
   z-index: 5;
+  cursor: pointer;
 }
 
 .catalog .items .item .price .prev {
@@ -2164,7 +2166,9 @@ h1, h2, h3, h4, h5, h6, p {
 }
 
 .feedback .list {
-  padding: 0 10px;
+  padding-bottom: 70px;
+  width: 300px;
+  margin: 0 auto;
 }
 
 .feedback .list .item {
@@ -2185,6 +2189,29 @@ h1, h2, h3, h4, h5, h6, p {
   bottom: 5px;
   border-radius: 5px;
   border: 1px solid #e6e6e6;
+}
+
+.feedback .list .nav {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  top: auto;
+  bottom: 0;
+  color: #ffffffcf;
+  border: 4px solid #ffffffcf;
+  background-color: rgba(0,0,0,.5);
+}
+
+.feedback .list .nav::after {
+  font-size: 16px;
+}
+
+.feedback .list .nav-prev {
+  left: 0;
+}
+
+.feedback .list .nav-next {
+  right: 0;
 }
 
 .feedback .labels {
@@ -2226,9 +2253,12 @@ h1, h2, h3, h4, h5, h6, p {
     letter-spacing: -1px;
   }
 
-  .feedback .list .item {
-    margin: 0 auto;
+  .feedback .list {
     width: 556px;
+    padding-bottom: 90px;
+  }
+
+  .feedback .list .item {
     min-height: 277px;
   }
 
@@ -2238,9 +2268,18 @@ h1, h2, h3, h4, h5, h6, p {
     top: 10px;
     bottom: 10px;
   }
+
+  .feedback .list .nav {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .feedback .list .nav::after {
+    font-size: 22px;
+  }
   
   .feedback .labels {
-    margin-top: 80px;
+    margin-top: 40px;
   }
 
   .feedback .labels .label {
@@ -2263,8 +2302,11 @@ h1, h2, h3, h4, h5, h6, p {
     display: initial;
   }
 
-  .feedback .list .item {
+  .feedback .list {
     width: 714px;
+  }
+
+  .feedback .list .item {
     min-height: 355px;
   }
 }
@@ -4105,6 +4147,7 @@ h1, h2, h3, h4, h5, h6, p {
   font-size: 0;
   border-radius: 10px;
   overflow: hidden;
+  cursor: pointer;
 }
 
 .slider .thumbs .thumb + .thumb {
@@ -4503,7 +4546,7 @@ h1, h2, h3, h4, h5, h6, p {
   right: 0;
   padding: 0 15px 15px;
   pointer-events: none;
-  transform: translateY(55px);
+  transform: translateY(75px);
   transition: transform .2s;
   z-index: 100;
 }
@@ -4513,13 +4556,16 @@ h1, h2, h3, h4, h5, h6, p {
 }
 
 .contact-panel a {
-  border-radius: 20px;
-  padding: 14px 12px;
+  border-radius: 30px;
+  padding: 22px 12px;
+  min-width: 135px;
   box-shadow: 0 3px 8px rgba(0,0,0,.2);
   color: #fff;
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 700;
   line-height: 1;
+  letter-spacing: .6px;
+  text-align: center;
   text-decoration: none;
   pointer-events: all;
 }
