@@ -31,6 +31,7 @@ var g = {
         return g.appendFromTemplate(`${g.getDayType()}-belt`, document.body);
     },
     modal: (modal => {
+        const mainLayer = modal.previousElementSibling;
         const backdrop = modal.querySelector('.modal-backdrop');
         const closeBtn = modal.querySelector('.modal-close');
         const container = modal.querySelector('.modal-content');
@@ -54,10 +55,12 @@ var g = {
             if (data.modalData) _data = JSON.parse(data.modalData);
             _load(data.modal);
             modal.classList.add('-up');
+            mainLayer.classList.add('-lock-scroll');
         };
         const close = () => {
             modal.addEventListener('transitionend', _unload, { once: true });
             modal.classList.remove('-up');
+            mainLayer.classList.remove('-lock-scroll');
         };
         const register = btn => btn.addEventListener('click', open.bind(null, btn.dataset), {passive: true});
         const content = () => container.lastElementChild;

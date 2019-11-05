@@ -582,7 +582,12 @@
             <span>Подбираем <strong>технику</strong></span>
           </li>
         </ul>
-        <button class="button">Рассчитать кухню<br>по моим размерам</button>
+        <form class="controls" name="call-calc">
+          <div class="input">
+            <input type="tel" name="tel" required placeholder="Введите номер телефона">
+          </div>
+          <button class="button">Рассчитать кухню<br>по моим размерам</button>
+        </form>
       </div>
       <script type="module">
         const slider = g.modal.content();
@@ -710,7 +715,6 @@
             <p class="highlight"></p>
           </div>
         </template>
-        <button class="button">Хочу такую же</button>
       </div>
       <script type="module">
         const slider = g.modal.content();
